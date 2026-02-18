@@ -1,0 +1,656 @@
+<?xml version="1.0"?>
+<robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- 导航基准 -->
+    <link name="base_footprint"/>
+    <joint name="base_footprint_to_base_link" type="fixed">
+        <origin xyz="0 0 0.06" rpy="0 0 0"/>  <!-- 补偿base_link离地高度（0.06m） -->
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+    </joint>
+
+    <!-- 机器人主体 base_link -->
+    <link name="base_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.10" length="0.12"/>
+            </geometry>
+            <material name='light_gray'>
+                <color rgba="0.8 0.8 0.8 0.6"/>
+            </material>
+        </visual>
+        <!-- 碰撞模型 -->
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.10" length="0.12"/>
+            </geometry>
+            <material name='light_gray'>
+                <color rgba="0.8 0.8 0.8 0.6"/>
+            </material>
+        </collision>
+        <!-- 质量和惯性 -->
+        <inertial>
+            <mass value="1.0"/>
+            <inertia ixx="0.0037" ixy="0.0" ixz="0.0"
+                     iyy="0.0037" iyz="0.0"
+                     izz="0.0050"/>
+        </inertial>
+    </link>
+
+
+    <!-- IMU传感器 -->
+    <link name="imu_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="0.02 0.02 0.02"/>
+            </geometry>
+            <material name='sky_blue'>
+                <color rgba="0.2 0.8 1.0 1.0"/>
+            </material>
+        </visual>
+        <!-- 碰撞模型 -->
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="0.02 0.02 0.02"/>
+            </geometry>
+            <material name='sky_blue'>
+                <color rgba="0.2 0.8 1.0 1.0"/>
+            </material>
+        </collision>
+        <!-- 质量和惯性 -->
+        <inertial>
+            <mass value="0.05"/>
+            <inertia ixx="0.00000333" ixy="0.0" ixz="0.0"
+                     iyy="0.00000333" iyz="0.0"
+                     izz="0.00000333"/>
+        </inertial>
+    </link>
+
+    <!-- 相机传感器 -->
+    <link name="camera_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="0.02 0.02 0.02"/>
+            </geometry>
+            <material name='orange_red'>
+                <color rgba="1.0 0.4 0.0 1.0"/>
+            </material>
+        </visual>
+        <!-- 碰撞模型 -->
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <box size="0.02 0.02 0.02"/>
+            </geometry>
+            <material name='orange_red'>
+                <color rgba="1.0 0.4 0.0 1.0"/>
+            </material>
+        </collision>
+        <!-- 质量和惯性 -->
+         <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.00000667" ixy="0.0" ixz="0.0"
+                     iyy="0.00000667" iyz="0.0"
+                     izz="0.00000667"/>
+         </inertial>   
+    </link>
+
+    <!-- 雷达支撑杆 -->
+    <link name="laser_stand_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.01" length="0.1"/>
+            </geometry>
+            <material name='dark_gray'>
+                <color rgba="0.3 0.3 0.3 1.0"/>
+            </material>
+        </visual>
+        <!-- 碰撞模型 -->
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.01" length="0.1"/>
+            </geometry>
+            <material name='dark_gray'>
+                <color rgba="0.3 0.3 0.3 1.0"/>
+            </material>
+        </collision>
+        <!-- 质量和惯性 -->
+         <inertial>
+            <mass value="0.05"/>
+            <inertia ixx="0.00000421" ixy="0.0" ixz="0.0"
+                     iyy="0.00000421" iyz="0.0"
+                     izz="0.00000025"/>
+         </inertial>
+    </link>
+
+    <!-- 雷达传感器 -->
+    <link name="laser_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.02" length="0.02"/>
+            </geometry>
+            <material name='violet'>
+                <color rgba="0.8 0.2 1.0 1.0"/>
+            </material>
+        </visual>
+        <!-- 碰撞模型 -->
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.02" length="0.02"/>
+            </geometry>
+            <material name='violet'>
+                <color rgba="0.8 0.2 1.0 1.0"/>
+            </material>
+        </collision>
+        <!-- 质量和惯性 -->
+         <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.00000133" ixy="0.0" ixz="0.0"
+                     iyy="0.00000133" iyz="0.0"
+                     izz="0.00000200"/>
+         </inertial>
+    </link>
+
+    <!-- GPS传感器 -->
+    <link name="gps_link">
+        <inertial>
+            <mass value="0.01"/>
+            <inertia ixx="0.000001" ixy="0.0" ixz="0.0"
+                    iyy="0.000001" iyz="0.0"
+                    izz="0.000001"/>
+        </inertial>
+        <visual>
+            <geometry>
+                <sphere radius="0.005"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 0.8"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- 左轮子 -->
+    <link name="left_wheel_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="1.57079 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.032" length="0.04"/>
+            </geometry>
+            <material name='tire_gray'>
+                <color rgba="0.25 0.25 0.25 1.0"/>
+            </material>
+        </visual>
+        <!-- 碰撞模型 -->
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="1.57079 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.032" length="0.04"/>
+            </geometry>
+            <material name='tire_gray'>
+                <color rgba="0.25 0.25 0.25 1.0"/>
+            </material>
+        </collision>
+        <!-- 质量和惯性 -->
+        <inertial>
+            <mass value="0.05"/>
+            <inertia ixx="0.00000731" ixy="0.0" ixz="0.0"
+                     iyy="0.00000731" iyz="0.0"
+                     izz="0.00000256"/>
+        </inertial>
+    </link>
+
+    <!-- 右轮子 -->
+    <link name="right_wheel_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="1.57079 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.032" length="0.04"/>
+            </geometry>
+            <material name='tire_gray'>
+                <color rgba="0.25 0.25 0.25 1.0"/>
+            </material>
+        </visual>
+        <!-- 碰撞模型 -->
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="1.57079 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.032" length="0.04"/>
+            </geometry>
+            <material name='tire_gray'>
+                <color rgba="0.25 0.25 0.25 1.0"/>
+            </material>
+        </collision>
+        <!-- 质量和惯性 -->
+        <inertial>
+            <mass value="0.05"/>
+            <inertia ixx="0.00000731" ixy="0.0" ixz="0.0"
+                     iyy="0.00000731" iyz="0.0"
+                     izz="0.00000256"/>
+        </inertial>
+    </link>
+
+    <!-- 前万向轮 -->
+    <link name="front_caster_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="0.016"/>
+            </geometry>
+            <material name='tire_gray'>
+                <color rgba="0.25 0.25 0.25 1.0"/>
+            </material>
+        </visual>
+        <!-- 碰撞模型 -->
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="0.016"/>
+            </geometry>
+            <material name='tire_gray'>
+                <color rgba="0.25 0.25 0.25 1.0"/>
+            </material>
+        </collision>
+        <!-- 质量和惯性 -->
+        <inertial>
+            <mass value="0.05"/>
+            <inertia ixx="0.000000102" ixy="0.0" ixz="0.0"
+                     iyy="0.000000102" iyz="0.0"
+                     izz="0.000000102"/>
+        </inertial>
+    </link>
+
+    <!-- 后万向轮 -->
+    <link name="back_caster_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="0.016"/>
+            </geometry>
+            <material name='tire_gray'>
+                <color rgba="0.25 0.25 0.25 1.0"/>
+            </material>
+        </visual>
+        <!-- 碰撞模型 -->
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="0.016"/>
+            </geometry>
+            <material name='tire_gray'>
+                <color rgba="0.25 0.25 0.25 1.0"/>
+            </material>
+        </collision>
+        <!-- 质量和惯性 -->
+        <inertial>
+            <mass value="0.05"/>
+            <inertia ixx="0.000000102" ixy="0.0" ixz="0.0"
+                     iyy="0.000000102" iyz="0.0"
+                     izz="0.000000102"/>
+        </inertial>
+    </link>
+
+    <link name="camera_optical_link">
+    </link>
+
+
+    <!-- IMU固定到base_link -->
+    <joint name="imu_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.02" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+    </joint>
+
+    <!-- 相机固定到base_link -->
+    <joint name="camera_joint" type="fixed">
+        <origin xyz="0.10 0.0 0.075" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="camera_link"/>
+    </joint>
+
+    <!-- 雷达杆固定到base_link -->
+    <joint name="laser_stand_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.10" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="laser_stand_link"/>
+    </joint>
+
+    <!-- 雷达固定到雷达杆 -->
+    <joint name="laser_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.05" rpy="0.0 0.0 0.0"/>
+        <parent link="laser_stand_link"/>
+        <child link="laser_link"/>
+    </joint>
+
+    <!-- 左轮子 -->
+    <joint name="left_wheel_joint" type="continuous">
+        <origin xyz="0.0 0.1 -0.065" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="left_wheel_link"/>
+        <axis xyz="0.0 1.0 0.0"/>
+    </joint>
+
+    <!-- 右轮子 -->
+    <joint name="right_wheel_joint" type="continuous">
+        <origin xyz="0.0 -0.1 -0.065" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="right_wheel_link"/>
+        <axis xyz="0.0 1.0 0.0"/>
+    </joint>
+
+    <!-- 前万向轮 -->
+    <joint name="front_caster_joint" type="fixed">
+        <origin xyz="0.08 0.0 -0.076" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="front_caster_link"/>
+    </joint>
+
+    <!-- 后万向轮 -->
+    <joint name="back_caster_joint" type="fixed">
+        <origin xyz="-0.08 0.0 -0.076" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="back_caster_link"/>
+    </joint>
+
+    <!-- 相机z轴朝向配置 -->
+    <joint name="camera_optical_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="-1.5708 0.0 -1.5708"/>
+        <parent link="camera_link"/>
+        <child link="camera_optical_link"/>
+    </joint>
+
+    <!-- GPS固定到base_link -->
+    <joint name="gps_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.05" rpy="0.0 0.0 0.0"/>
+        <parent link="base_link"/>
+        <child link="gps_link"/>
+    </joint>
+
+    <gazebo reference="base_link">
+        <collision>false</collision>
+        <material>Gazebo/White</material>
+    </gazebo>
+
+    <gazebo reference="imu_link">
+        <material>Gazebo/SkyBlue</material>
+    </gazebo>
+
+    <gazebo reference="camera_link">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <gazebo reference="laser_stand_link">
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
+    <gazebo reference="laser_link">
+        <material>Gazebo/Purple</material>
+    </gazebo>
+
+    <gazebo reference="left_wheel_link">
+        <material>Gazebo/Black</material>
+        <mu1 value="20.0"/>
+        <mu2 value="20.0"/>
+        <kp value="10000000000.0"/>
+        <kd value="1.0"/>
+    </gazebo>
+
+    <gazebo reference="right_wheel_link">
+        <material>Gazebo/Black</material>
+        <mu1 value="20.0"/>
+        <mu2 value="20.0"/>
+        <kp value="10000000000.0"/>
+        <kd value="1.0"/>
+    </gazebo>
+
+    <gazebo reference="front_caster_link">
+        <material>Gazebo/Black</material>
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <kp value="10000000000.0"/>
+        <kd value="1.0"/>
+    </gazebo>
+
+    <gazebo reference="back_caster_link">
+        <material>Gazebo/Black</material>
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+        <kp value="10000000000.0"/>
+        <kd value="1.0"/>
+    </gazebo>
+
+
+<!-- Gazebo差速驱动插件 -->
+    <ros2_control name="FishBotGazeboSystem" type="system">
+        <hardware>
+            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+        <joint name="left_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-50</param>
+                <param name="max">50</param>
+            </command_interface>
+            <command_interface name="effort">
+                <param name="min">-0.1</param>
+                <param name="max">0.1</param>
+            </command_interface>
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+            <state_interface name="effort" />
+        </joint>
+        <joint name="right_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-50</param>
+                <param name="max">50</param>
+            </command_interface>
+            <command_interface name="effort">
+                <param name="min">-0.1</param>
+                <param name="max">0.1</param>
+            </command_interface>
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+            <state_interface name="effort" />
+        </joint>
+    </ros2_control>
+    <gazebo>
+        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+            <parameters>$(find gps_nav2)/config/fishbot_ros2_controller.yaml</parameters>
+            <ros>
+                <remapping>/fishbot_diff_drive_controller/cmd_vel_unstamped:=/cmd_vel</remapping>
+                <remapping>/fishbot_diff_drive_controller/odom:=/odom</remapping>
+            </ros>
+        </plugin>
+    </gazebo>
+
+
+
+<!-- 激光雷达驱动插件 -->
+    <gazebo reference="laser_link">
+        <sensor name="laser_sensor" type="ray">
+            <always_on>true</always_on>
+            <visualize>true</visualize>
+            <update_rate>10</update_rate>
+            <ray>
+                <scan>
+                    <horizontal>
+                    <samples>360</samples>  <!-- 360°全向扫描 -->
+                    <resolution>1.000000</resolution>  <!-- 每个角度1个采样点 -->
+                    <min_angle>0.000000</min_angle>
+                    <max_angle>6.280000</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.120000</min>  <!-- 最小测距，避免检测到自身 -->
+                    <max>8</max>  <!-- 最大测距 -->
+                    <resolution>0.015000</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>  <!-- 高斯噪声，模拟真实激光雷达 -->
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+            </ray>
+
+            <plugin name="laserscan" filename="libgazebo_ros_ray_sensor.so">
+                <ros>
+                    <remapping>~/out:=scan</remapping>
+                </ros>
+            <output_type>sensor_msgs/LaserScan</output_type>
+            <frame_name>laser_link</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+<!-- imu驱动插件 -->
+    <gazebo reference="imu_link">
+        <sensor name="imu_sensor" type="imu">
+        <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+            <ros>
+                <namespace>/</namespace>
+                <remapping>~/out:=imu</remapping>
+            </ros>
+            <initial_orientation_as_reference>false</initial_orientation_as_reference>
+        </plugin>
+        <always_on>true</always_on>
+        <update_rate>100</update_rate>
+        <visualize>true</visualize>
+        <imu>
+            <angular_velocity>
+                <x>
+                    <noise type="gaussian">
+                        <mean>0.0</mean>
+                        <stddev>0.0</stddev>
+                        <bias_mean>0.0</bias_mean>
+                    </noise>
+                </x>
+                <y>
+                    <noise type="gaussian">
+                        <mean>0.0</mean>
+                        <stddev>0.0</stddev>
+                        <bias_mean>0.0</bias_mean>
+                    </noise>
+                </y>
+                <z>
+                    <noise type="gaussian">
+                        <mean>0.0</mean>
+                        <stddev>0.0</stddev>
+                        <bias_mean>0.0</bias_mean>
+                    </noise>
+                </z>
+            </angular_velocity>
+            <linear_acceleration>
+                <x>
+                    <noise type="gaussian">
+                        <mean>0.0</mean>
+                        <stddev>0.0</stddev>
+                        <bias_mean>0.0</bias_mean>
+                        <bias_stddev>0.001</bias_stddev>
+                    </noise>
+                </x>
+                <y>
+                    <noise type="gaussian">
+                        <mean>0.0</mean>
+                        <stddev>0.0</stddev>
+                        <bias_mean>0.0</bias_mean>
+                        <bias_stddev>0.001</bias_stddev>
+                    </noise>
+                </y>
+                <z>
+                    <noise type="gaussian">
+                        <mean>0.0</mean>
+                        <stddev>0.0</stddev>
+                        <bias_mean>0.0</bias_mean>
+                        <bias_stddev>0.001</bias_stddev>
+                    </noise>
+                </z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
+    </gazebo>
+
+    <!-- 深度相机驱动 -->
+    <gazebo reference="camera_link">
+        <sensor type="depth" name="camera_sensor">
+            <plugin name="depth_camera" filename="libgazebo_ros_camera.so">
+                <ros>
+                    <namespace>/</namespace> 
+                    <remapping>~/image_raw:=image_raw</remapping> <!-- 彩色图像话题 -->
+                    <remapping>~/depth/image_raw:=depth/image_raw</remapping> <!-- 深度图像话题 -->
+                    <remapping>~/camera_info:=camera_info</remapping> <!-- 相机内参话题 -->
+                </ros>
+                <frame_name>camera_optical_link</frame_name>
+            </plugin>
+            <always_on>true</always_on>
+            <update_rate>10</update_rate>
+            <camera name="camera">
+                <horizontal_fov>1.5009831567</horizontal_fov>
+                <image>
+                    <width>800</width>
+                    <height>600</height>
+                    <format>R8G8B8</format>
+                </image>
+                <distortion>
+                    <k1>0.0</k1>
+                    <k2>0.0</k2>
+                    <k3>0.0</k3>
+                    <p1>0.0</p1>
+                    <p2>0.0</p2>
+                    <center>0.5 0.5</center>
+                </distortion>
+            </camera>
+        </sensor>
+    </gazebo>
+
+    <!-- GPS驱动插件 -->
+    <gazebo reference="gps_link">
+        <material>Gazebo/Green</material>
+        <sensor name="gps_sensor" type="gps">
+            <always_on>true</always_on>
+            <update_rate>30</update_rate>
+            <gps>
+                <position_sensing>
+                    <horizontal>  
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>0.0001</stddev>
+                        </noise>
+                    </horizontal>
+                    <vertical>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>0.0001</stddev>
+                        </noise>
+                    </vertical>
+                </position_sensing>
+                <velocity_sensing>
+                    <horizontal>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>0.0001</stddev>
+                        </noise>
+                    </horizontal>
+                    <vertical>
+                        <noise type="gaussian">
+                            <mean>0.0</mean>
+                            <stddev>0.0001</stddev>
+                        </noise>
+                    </vertical>
+                </velocity_sensing>
+            </gps>
+            <plugin name="gps_plugin" filename="libgazebo_ros_gps_sensor.so">
+                <ros>
+                    <remapping>~/out:=gps/fix</remapping>
+                </ros>
+                <frame_name>gps_link</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+</robot>

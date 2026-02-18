@@ -1,0 +1,80 @@
+### 局部EKF节点：融合编码器和IMU数据，输出机器人相对odom坐标系的局部定位，发布odom ->base_link变换 ###
+ekf_filter_node_odom:
+  ros__parameters:
+    frequency: 30.0
+    two_d_mode: true  # 忽略Z轴运动
+    publish_tf: true  # 发布odom→base_link的TF坐标变换
+
+    # 坐标系定义
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_link 
+    world_frame: odom
+
+    # 传感器1：差速电机里程计
+    odom0: odom
+    odom0_config: [false, false, false,
+                  false, false, false,
+                  true,  true,  false,  # 融合X, Y速度
+                  false, false, true,   # 融合Z轴角速度
+                  false, false, false]
+
+    # 传感器2：IMU
+    imu0: imu 
+    imu0_config: [false, false, false,
+                  false, false, true,   # 融合yaw航向
+                  false, false, false,
+                  false, false, true,   # 融合yaw角速度
+                  true,  false, false]  # 融合x加速度
+    imu0_remove_gravitational_acceleration: true
+
+
+
+### 全局EKF节点：融合GPS，发布map->odom变换 ###
+ekf_filter_node_map:
+  ros__parameters:
+    frequency: 30.0
+    two_d_mode: true
+    publish_tf: true
+
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_link
+    world_frame: map 
+
+    # 传感器1：差速电机里程计
+    odom0: odom
+    odom0_config: [false, false, false,
+                  false, false, false,
+                  true,  true,  false,  
+                  false, false, true,
+                  false, false, false]
+
+    # 传感器2：GPS转换后的笛卡尔坐标里程计
+    odom1: odometry/gps
+    odom1_config: [true,  true,  false, # 融合GPS的x/y全局位置
+                  false, false, false,
+                  false, false, false,
+                  false, false, false,
+                  false, false, false]
+
+    # 传感器3：IMU
+    imu0: imu
+    imu0_config: [false, false, false,
+                  false, false, true,
+                  false, false, false,
+                  false, false, true,
+                  true,  false, false]
+
+### GPS 坐标转换节点 ###
+navsat_transform:
+  ros__parameters:
+    frequency: 30.0
+    delay: 3.0
+    magnetic_declination_radians: 0.0  # 磁偏角
+    yaw_offset: 1.570796327  #  偏航偏移量，Gazebo 11中X是东，Y是北，偏转90度
+    zero_altitude: true
+    broadcast_cartesian_transform: false  # 由全局EKF统一发布
+    publish_filtered_gps: false
+    use_odometry_yaw: false
+    wait_for_datum: false

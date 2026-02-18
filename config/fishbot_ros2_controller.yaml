@@ -1,0 +1,47 @@
+### 差速驱动机器人运动控制配置 ###
+controller_manager:
+  ros__parameters:
+    update_rate: 100  
+    use_sim_time: true
+
+    # 定义控制器插件
+    fishbot_diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+
+fishbot_diff_drive_controller:
+  ros__parameters:
+    # 轮子关节名
+    left_wheel_names: ["left_wheel_joint"]
+    right_wheel_names: ["right_wheel_joint"]
+
+    # 轮子物理参数
+    wheel_separation: 0.20  
+    wheel_radius: 0.032     
+    use_stamped_vel: false
+
+    # 坐标系配置
+    odom_frame_id: odom
+    base_frame_id: base_link 
+    publish_wheel_tf: true   
+
+    # 线速度限制
+    linear:
+      x:
+        has_velocity_limits: true
+        max_velocity: 1.0
+        min_velocity: -1.0
+        has_acceleration_limits: true
+        max_acceleration: 1.0
+
+    # 角速度限制
+    angular:
+      z:
+        has_velocity_limits: true
+        max_velocity: 2.0
+        min_velocity: -2.0
+        has_acceleration_limits: true
+        max_acceleration: 2.0
