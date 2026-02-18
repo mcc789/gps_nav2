@@ -1,4 +1,6 @@
 # gps_nav2
+[![ROS 2 Humble](https://img.shields.io/badge/ROS%202-Humble-blue.svg)](https://docs.ros.org/en/humble/index.html)
+[![MPPI Controller](https://img.shields.io/badge/MPPI-Controller-green.svg)](https://navigation.ros.org/configuration/plugins/controller_plugins/mppi_controller.html)
 ROS 2 Humble Hawksbill 下基于 Nav2 的 FishBot 室外 GPS 导航仿真包（Python 实现）  
 本项目实现了基于鱼香ROS差速驱动机器人 FishBot 在 Gazebo 室外场景下的 GPS 导航，集成双 EKF 融合（编码器+IMU+GPS）实现高精度全局定位，适配 **MPPI 局部控制器** 完成平滑避障，支持经纬度目标点导航。
 
@@ -10,20 +12,31 @@ ROS 2 Humble Hawksbill 下基于 Nav2 的 FishBot 室外 GPS 导航仿真包（P
 - **完整的导航能力**：支持 GPS 目标点下发、全局路径规划（Navfn/STAR）、MPPI 局部避障  
 - **可视化调试**：RViz 预设配置，一键显示机器人模型、激光点云、GPS 轨迹、规划路径、MPPI 采样轨迹  
 
-## 环境要求 & 快速运行
+## 环境要求 & 完整操作命令
 ```bash
-# 基础环境
+# ===================== 基础环境要求 =====================
 # 操作系统: Ubuntu 22.04 LTS (Jammy Jellyfish)
 # ROS 2 版本: Humble Hawksbill (必须严格匹配，不同版本可能兼容异常)
 # Gazebo 版本: 11 (Ubuntu 22.04 默认安装版本)
 
-# 环境验证
+# ===================== 环境验证 =====================
 # 验证 ROS 2 版本
 ros2 --version  # 输出应包含 "humble"
 # 验证 Gazebo
 gazebo --version  # 输出应包含 "Gazebo 11."
 
-# 快速运行
+# ===================== 完整依赖安装 =====================
+sudo apt update && sudo apt install -y \
+  ros-humble-nav2-mppi-controller \
+  ros-humble-robot-localization \
+  ros-humble-gps-tools \
+  ros-humble-gazebo-ros-pkgs \
+  ros-humble-nav2-bringup \
+  ros-humble-rviz2 \
+  ros-humble-geometry-msgs \
+  python3-colcon-common-extensions
+
+# ===================== 快速运行 =====================
 # 一键启动：Gazebo场景 + FishBot模型 + Nav2 + MPPI控制器 + GPS融合定位
 ros2 launch gps_nav2 gps_navigation.launch.py
 
